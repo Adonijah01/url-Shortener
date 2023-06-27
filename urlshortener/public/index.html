@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>URL Shortener</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333333;
+      text-align: center;
+      margin-top: 0;
+    }
+
+    #shorten-form {
+      margin-top: 20px;
+    }
+
+    #original-url {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    #shorten-button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #shorten-button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #result a {
+      color: #333333;
+      text-decoration: none;
+    }
+
+    #result a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>URL Shortener</h1>
+    <form id="shorten-form">
+      <input type="text" id="original-url" placeholder="Enter URL" required>
+      <button type="submit" id="shorten-button">Shorten</button>
+    </form>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.querySelector('#shorten-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const input = document.querySelector('#original-url');
+      const originalUrl = input.value.trim();
+
+      if (!originalUrl) {
+        return;
+      }
+
+      const serverUrl = '/shorten';
+
+      fetch(serverUrl + '?url=' + encodeURIComponent(originalUrl))
+        .then(response => response.json())
+        .then(data => {
+          if (data.shortUrl) {
+            const resultDiv = document.querySelector('#result');
+            resultDiv.innerHTML = `Shortened URL: <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+            input.value = '';
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+  </script>
+</body>
+</html>
+
